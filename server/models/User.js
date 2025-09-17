@@ -1,12 +1,11 @@
 import mongoose, { model } from "mongoose";
 
-
-const UserSchema = new mongoose.Schema ({
-    firstName: {
+const UserSchema = new mongoose.Schema({
+    firstname: {
         type: String,
         require: true,
     },
-    lastName: {
+    lastname: {
         type: String,
         require: true,
     },
@@ -15,21 +14,21 @@ const UserSchema = new mongoose.Schema ({
         require: true,
         unique: true
     },
-    password: {
-        type: String,
-        require: true,
-    },
-    phoneNumber: {
+    phone: {
         type: String,
         require: true,
         unique: true,
     },
+    password: {
+        type: String,
+        require: true,
+    },
     createAt: {
         type: Date,
-        require: true
+        default: Date.now,
+        require: true,
     }
 });
 
-
 const User = mongoose.model('User', UserSchema)
-module.exports = User;
+export default User;

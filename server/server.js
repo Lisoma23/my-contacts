@@ -2,6 +2,7 @@ import express from 'express'
 import connectMongo from './config/mongoDBConfig.js'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config({ path: '.env' })
 
@@ -9,14 +10,18 @@ const app = express()
 const port = process.env.port
 const corsOrigin = process.env.corsOrigin
 
+app.use(express.json());
+
 app.use(cors({ origin: `${corsOrigin}` }))
+
+connectMongo();
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+app.use('/api/users', userRoutes);
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
-
-connectMongo();
