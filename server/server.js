@@ -3,6 +3,7 @@ import connectMongo from './config/mongoDBConfig.js'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js'
 
 dotenv.config({ path: '.env' })
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/users', userRoutes);
+app.use('/auth', authRoutes);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
