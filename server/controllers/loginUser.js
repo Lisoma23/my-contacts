@@ -28,6 +28,6 @@ export async function loginUser(req, res) {
     });
     
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500).json({ error: "Server error" });
   }
 }
