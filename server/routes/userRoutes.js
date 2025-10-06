@@ -34,9 +34,21 @@ const router = Router();
  *                   createdAt:
  *                     type: string
  *       401:
- *         description: Invalid Token
+ *         description: Autre type d'erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example :
+ *                err : Invalid Token
  *       500:
- *         description: Server error
+ *         description: Autre type d'erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example :
+ *                error : Server error
  */
 router.get("/", requireAuth, getAllUsers);
 
