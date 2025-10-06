@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { addContacts } from "../controllers/addContacts.js";
+import { getContacts } from "../controllers/getContacts.js";
+import { addContacts } from "../controllers/addContact.js";
 import requireAuth from "../middleware/requireAuth.js";
 
 const router = Router();
 
+router.get("/get", requireAuth, getContacts)
 router.post("/add", requireAuth, addContacts);
 
 export default router;
