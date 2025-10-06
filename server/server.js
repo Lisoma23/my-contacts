@@ -2,12 +2,12 @@ import express from "express";
 import connectMongo from "./config/mongoDBConfig.js";
 import dotenv from "dotenv";
 import cors from "cors";
-import {specs} from "./swagger.js";
+import { specs } from "./swagger.js";
 import swaggerUi from "swagger-ui-express";
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-
+import contactRoutes from "./routes/contactRoutes.js";
 
 dotenv.config({ path: ".env" });
 
@@ -17,7 +17,7 @@ const corsOrigin = process.env.corsOrigin;
 
 app.use(express.json());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(cors({ origin: `${corsOrigin}` }));
 
@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/contact", contactRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
