@@ -6,8 +6,8 @@ export async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
 
-    if (!email) res.status(400).send("User email required");
-    if (!password) res.status(400).send("User password required");
+    if (!email) res.status(400).json({ message: "User email required" });
+    if (!password) res.status(400).json({ message: "User password required" });
 
     const user = await User.findOne({ email });
 

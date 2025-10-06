@@ -16,7 +16,6 @@ export async function patchContact(req, res) {
     }
     res.status(200).json(updatedContact);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: err });
   }
 }

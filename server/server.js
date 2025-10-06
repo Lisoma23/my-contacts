@@ -24,7 +24,7 @@ app.use(cors({ origin: `${corsOrigin}` }));
 connectMongo();
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200).json({ message: "OK" });
 });
 
 app.use("/api/users", userRoutes);
