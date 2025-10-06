@@ -59,6 +59,14 @@ const router = Router();
  *                 summary: Un seul champ est manquant (ici l'email)
  *                 value :
  *                   email: User email required
+ *               invalid_phone:
+ *                 summary: Le numéro de téléphone est invalide
+ *                 value :
+ *                   phone: 1234 is not a valid phone number!
+ *               invalid_email:
+ *                 summary: L'email est invalide
+ *                 value :
+ *                   email: invalid-email is not a valid email!
  *
  *       403:
  *         description: L'email ou le téléphone est déjà utilisé
