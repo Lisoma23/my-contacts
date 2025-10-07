@@ -3,21 +3,23 @@ import User from "../models/User.js";
 
 export async function addContacts(req, res) {
   try {
-    const { firstname, lastname, phone, idUser } = req.body;
+    const { firstname, lastname, phone } = req.body;
+    const idUser = req.auth.userId;
 
     try {
-      await User.findById(idUser).exec();
+      await User.findById(idUser);
     } catch {
-      res.status(404).json({ error: "idUser invalid" });
+      return res.status(404).json({ error: "idUser invalid" });
     }
 
     try {
-      const userContact = await Contact.find({ idUser, phone });
-      if (userContact.length != 0) {
-        res.status(409).json({ error: "Contact already exists" });
+      const userContact = await Contact.findOne({ idUser, phone });
+      if (userContact != null) {
+        return res.status(409).json({ error: "Contact already exists" });
       }
-    } catch {
-      res.status(500).json({ error: err });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Server error" });
     }
 
     const contacts = new Contact({
@@ -40,6 +42,7 @@ export async function addContacts(req, res) {
     }
     res.status(201).json({ message: "Contact created" });
   } catch (err) {
-    res.status(500).json({ error: err });
+    console.log(err);
+    res.status(500).json({ error: "Server error" });
   }
 }

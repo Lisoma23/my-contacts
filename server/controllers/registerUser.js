@@ -9,7 +9,7 @@ export async function registerUser(req, res) {
     try {
       hash = await bcrypt.hash(password, 10);
     } catch (err) {
-      res.status(400).json({ error: "Password is required" });
+      return res.status(400).json({ error: "Password is required" });
     }
 
     //envoie dans le model
@@ -39,6 +39,7 @@ export async function registerUser(req, res) {
 
     // console.log(firstname, lastname, email, phone, password, hash);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 }

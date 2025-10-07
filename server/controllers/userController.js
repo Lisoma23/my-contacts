@@ -9,6 +9,7 @@ export async function getAllUsers(req, res) {
     const users = await User.find();
     res.status(200).json(users);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 }

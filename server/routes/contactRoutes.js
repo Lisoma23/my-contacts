@@ -19,17 +19,6 @@ const router = Router();
  *       L'utilisateur doit être authentifié via `requireAuth`.
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               idUser:
- *                 type: string
- *                 description: ID de l'utilisateur dont on veut récupérer les contacts
- *                 example: "671a9b8b4c6d2f001234abcd"
  *     responses:
  *       200:
  *         description: Liste des contacts récupérée avec succès
@@ -58,18 +47,8 @@ const router = Router();
  *                       idUser:
  *                         type: string
  *                         example: "671a9b8b4c6d2f001234abcd"
- *       400:
- *         description: idUser manquant
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "idUser Required"
  *       401:
- *         description: Jeton d’authentification invalide ou manquant
+ *         description: Jeton d’authentification invalide ou manquant - idUser manquant
  *         content:
  *           application/json:
  *             schema:
@@ -86,6 +65,10 @@ const router = Router();
  *                 summary: Token manquant
  *                 value:
  *                   error: "No token provided."
+ *               no_idUser:
+ *                 summary: idUser manquant
+ *                 value:
+ *                   error: "idUser Required"
  *       404:
  *         description: idUser invalide (utilisateur introuvable)
  *         content:
@@ -132,7 +115,6 @@ router.get("/get", requireAuth, getContacts);
  *               - firstname
  *               - lastname
  *               - phone
- *               - idUser
  *             properties:
  *               firstname:
  *                 type: string
@@ -146,10 +128,6 @@ router.get("/get", requireAuth, getContacts);
  *                 type: string
  *                 description: Numéro de téléphone du contact (format international)
  *                 example: "+33612345678"
- *               idUser:
- *                 type: string
- *                 description: ID de l'utilisateur auquel le contact est associé
- *                 example: "671a9b8b4c6d2f001234abcd"
  *     responses:
  *       201:
  *         description: Contact créé avec succès
@@ -187,7 +165,7 @@ router.get("/get", requireAuth, getContacts);
  *                     phone: User phone number required
  *                     idUser: idUser required
  *       401:
- *         description: Jeton d’authentification invalide ou manquant
+ *         description: Jeton d’authentification invalide ou manquant - idUser manquant
  *         content:
  *           application/json:
  *             schema:
@@ -204,6 +182,11 @@ router.get("/get", requireAuth, getContacts);
  *                 summary: Token manquant
  *                 value:
  *                   error: "No token provided."
+ *               no_idUser:
+ *                 summary: idUser manquant
+ *                 value:
+ *                   error: "idUser Required"
+ *
  *       404:
  *         description: idUser invalide (utilisateur introuvable)
  *         content:
@@ -243,11 +226,11 @@ router.post("/add", requireAuth, addContacts);
  *   patch:
  *     tags:
  *       - Contacts
- *     summary: Met à jour un contact existant (avec test JWT)
+ *     summary: Met à jour un contact existant (authentification requise)
  *     description: >
  *       Met à jour les informations d’un contact identifié par son **ID**.
- *       L'utilisateur doit être authentifié via `requireAuth`.
- *       Tous les champs du modèle peuvent être mis à jour (firstname, lastname, phone, idUser).
+ *       L'utilisateur doit être authentifié via un jeton JWT (`requireAuth`).
+ *       Seul le propriétaire du contact peut le modifier.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -277,10 +260,6 @@ router.post("/add", requireAuth, addContacts);
  *                 type: string
  *                 description: Nouveau numéro de téléphone (format international)
  *                 example: "+33765432109"
- *               idUser:
- *                 type: string
- *                 description: Nouvel ID utilisateur associé
- *                 example: "671a9b8b4c6d2f001234abcd"
  *     responses:
  *       200:
  *         description: Contact mis à jour avec succès
@@ -301,7 +280,7 @@ router.post("/add", requireAuth, addContacts);
  *                 phone:
  *                   type: string
  *                   example: "+33765432109"
- *                 idUser:
+ *                 userId:
  *                   type: string
  *                   example: "671a9b8b4c6d2f001234abcd"
  *       304:
@@ -314,18 +293,6 @@ router.post("/add", requireAuth, addContacts);
  *                 message:
  *                   type: string
  *                   example: "Contact not modified"
- *       400:
- *         description: Erreur de validation (par ex. numéro de téléphone invalide)
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/ContactValidationError"
- *             examples:
- *               invalid_phone:
- *                 summary: Numéro invalide
- *                 value:
- *                   errors:
- *                     phone: "+33123456 is not a valid phone number!"
  *       401:
  *         description: Jeton d’authentification invalide ou manquant
  *         content:
@@ -344,6 +311,30 @@ router.post("/add", requireAuth, addContacts);
  *                 summary: Token manquant
  *                 value:
  *                   error: "No token provided."
+ *               no_idUser:
+ *                 summary: idUser manquant
+ *                 value:
+ *                   error: "idUser Required"
+ *       403:
+ *         description: L’utilisateur n’est pas autorisé à modifier ce contact
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized to edit this contact"
+ *       404:
+ *         description: Contact introuvable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Contact not found"
  *       500:
  *         description: Erreur interne du serveur
  *         content:
@@ -363,10 +354,11 @@ router.patch("/:id", requireAuth, patchContact);
  *   delete:
  *     tags:
  *       - Contacts
- *     summary: Supprime un contact (avec test JWT)
+ *     summary: Supprime un contact existant (authentification requise)
  *     description: >
  *       Supprime définitivement un contact identifié par son **ID**.
- *       L'utilisateur doit être authentifié via `requireAuth`.
+ *       L'utilisateur doit être authentifié via un jeton JWT (`requireAuth`).
+ *       Seul le propriétaire du contact est autorisé à le supprimer.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -406,6 +398,20 @@ router.patch("/:id", requireAuth, patchContact);
  *                 summary: Token manquant
  *                 value:
  *                   error: "No token provided."
+ *               no_idUser:
+ *                 summary: idUser manquant
+ *                 value:
+ *                   error: "idUser Required"
+ *       403:
+ *         description: L’utilisateur n’est pas autorisé à supprimer ce contact
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized to delete this contact"
  *       404:
  *         description: Contact introuvable
  *         content:
@@ -427,6 +433,7 @@ router.patch("/:id", requireAuth, patchContact);
  *                   type: string
  *                   example: "Server error"
  */
+
 router.delete("/:id", requireAuth, deleteContact);
 
 export default router;
