@@ -4,11 +4,11 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 const contactSchema = new mongoose.Schema({
   firstname: {
     type: String,
-    required: true,
+    required: [true, "User firstname required"],
   },
   lastname: {
     type: String,
-    required: true,
+    required: [true, "User lastname required"],
   },
   phone: {
     type: String,
@@ -18,11 +18,11 @@ const contactSchema = new mongoose.Schema({
       },
       message: (props) => `${props.value} is not a valid phone number!`,
     },
-    required: true,
+    required: [true, "User phone number required"],
   },
   idUser: {
     type: String,
-    required: true,
+    required: [true, "idUser required"],
   },
 });
 

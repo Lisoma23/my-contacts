@@ -12,6 +12,6 @@ export default function requireAuth(req, res, next) {
     console.log(err);
     if (err == "No token.")
       res.status(401).json({ error: "No token provided." });
-    res.status(401).json({ err: "Invalid Token" });
+    res.status(401).json({ error : "Invalid Token" });
   }
 }

@@ -8,7 +8,12 @@ const router = Router();
  * @swagger
  * /api/users:
  *   get:
+ *     tags :
+ *       - User
  *     summary: Récupère la liste de tous les utilisateurs (avec test JWT)
+ *     description: >
+ *       Récupère la liste de tous les utilisateurs.
+ *       L'utilisateur doit être authentifié via `requireAuth`.
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -34,13 +39,23 @@ const router = Router();
  *                   createdAt:
  *                     type: string
  *       401:
- *         description: Autre type d'erreur serveur
+ *         description: Jeton d’authentification invalide ou manquant
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               example :
- *                err : Invalid Token
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             examples:
+ *               invalid_token:
+ *                 summary: Token invalide
+ *                 value:
+ *                   error: "Invalid Token"
+ *               no_token:
+ *                 summary: Token manquant
+ *                 value:
+ *                   error: "No token provided."
  *       500:
  *         description: Autre type d'erreur serveur
  *         content:

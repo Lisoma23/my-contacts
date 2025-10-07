@@ -8,7 +8,12 @@ const router = Router();
  * @swagger
  * /auth/register:
  *   post:
+ *     tags :
+ *       - Authentification
  *     summary: Crée un nouvel utilisateur
+ *     description: >
+ *       Crée un nouvel utilisateur avec les champs `firstname`, `lastname`, `email`, `phone` et `password`.
+ *       Le mot de passe est automatiquement haché avant d'être stocké.
  *     requestBody:
  *       required: true
  *       content:
@@ -66,7 +71,7 @@ const router = Router();
  *               invalid_email:
  *                 summary: L'email est invalide
  *                 value :
- *                   email: invalid-email is not a valid email!
+ *                   email: hello123.com is not a valid email!
  *
  *       403:
  *         description: L'email ou le téléphone est déjà utilisé
@@ -91,7 +96,12 @@ router.post("/register", registerUser);
  * @swagger
  * /auth/login:
  *   post:
+ *     tags :
+ *       - Authentification
  *     summary: Authentifie un utilisateur et retourne un JWT
+ *     description: >
+ *       Authentifie un utilisateur avec son `email` et son `password`.
+ *       Si les informations sont correctes, retourne un token JWT à utiliser pour les requêtes authentifiées.
  *     requestBody:
  *       required: true
  *       content:
