@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import "./form.scss";
 
 export default function Form({
   fields = [],
@@ -11,9 +15,7 @@ export default function Form({
 }) {
   const [values, setValues] = useState(() => {
     const initialValues = {};
-    fields.forEach(
-      (field) => (initialValues[field.name] = "")
-    );
+    fields.forEach((field) => (initialValues[field.name] = ""));
     return initialValues;
   });
 
@@ -43,6 +45,12 @@ export default function Form({
       if (field.type === "email" && !validateEmail(value)) {
         newErrors[field.name] = "Please enter a valid email address";
       }
+
+      if (field.type === "phone" && !isValidPhoneNumber(value))
+        newErrors[field.name] = "Please enter a valid phone number";
+
+      if (field.name === "passwordConfirm" && value !== values["password"])
+        newErrors[field.name] = "The confirmation must match the password";
     });
     setErrors(newErrors);
 
@@ -54,27 +62,51 @@ export default function Form({
   return (
     <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 h-fit">
       <legend className="fieldset-legend">{formName}</legend>
+      <div
+        className={`${
+          formName === "Register"
+            ? "grid grid-cols-2 gap-x-10 gap-y-2 w-[45vw]"
+            : ""
+        }`}
+      >
+        {fields.map((field) => (
+          <div key={field.name} className="mb-3">
+            {field.label && <label className="label mb-2">{field.label}</label>}
 
-      {fields.map((field) => (
-        <div key={field.name} className="mb-3">
-          {field.label && <label className="label mb-2">{field.label}</label>}
-          <input
-            type={field.type || "text"}
-            name={field.name}
-            placeholder={field.placeholder || ""}
-            className={`input w-full ${
-              errors[field.name] ? "border-red-900" : ""
-            }`}
-            value={values[field.name]}
-            onChange={handleChange}
-          />
-          {submitted && errors[field.name] && (
-            <p className="text-red-900 text-sm pt-1">{errors[field.name]}</p>
-          )}
-        </div>
-      ))}
+            {field.name === "phone" ? (
+              <PhoneInput
+                country={"fr"}
+                type={field.type || "text"}
+                name={field.name}
+                placeholder={field.placeholder || ""}
+                className={`input w-full ${
+                  errors[field.name] ? "border-red-900" : ""
+                }`}
+                value={values[field.name]}
+                onChange={(value) => {
+                  setValues({ ...values, [field.name]: "+" + value });
+                }}
+              />
+            ) : (
+              <input
+                type={field.type || "text"}
+                name={field.name}
+                placeholder={field.placeholder || ""}
+                className={`input w-full ${
+                  errors[field.name] ? "border-red-900" : ""
+                }`}
+                value={values[field.name]}
+                onChange={handleChange}
+              />
+            )}
+            {submitted && errors[field.name] && (
+              <p className="text-red-900 text-xs pt-1">{errors[field.name]}</p>
+            )}
+          </div>
+        ))}
+      </div>
 
-      <p className="mt-2">
+      <p className="mt-2 mb-4">
         {submitLabel === "Login" ? (
           <>
             New here ?{" "}
@@ -85,22 +117,31 @@ export default function Form({
         ) : (
           <>
             Already have an account ?{" "}
-            <Link to="/login" className="underline">
+            <Link to="/" className="underline">
               Sign in
             </Link>
           </>
         )}
       </p>
       {errorMessage && (
-        <p className="text-red-900 text-center mt-4">{errorMessage}</p>
+        <p className="text-red-900 text-center">{errorMessage}</p>
       )}
-      <button
-        className="btn btn-neutral w-full"
-        disabled={loading}
-        onClick={() => handleSubmit()}
+
+      <div
+        className={`mt-2 ${
+          formName === "Register" ? "w-full text-center" : ""
+        }`}
       >
-        {loading ? "Loading..." : submitLabel}
-      </button>
+        <button
+          className={`btn btn-neutral ${
+            formName === "Register" ? "w-50" : "w-full"
+          }`}
+          disabled={loading}
+          onClick={() => handleSubmit()}
+        >
+          {loading ? "Loading..." : submitLabel}
+        </button>
+      </div>
     </fieldset>
   );
 }
