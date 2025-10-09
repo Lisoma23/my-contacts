@@ -12,7 +12,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 dotenv.config({ path: ".env" });
 
 const app = express();
-const port = process.env.port;
+const port = process.env.PORT || 3000;
 const corsOrigin = process.env.corsOrigin;
 
 app.use(express.json());
