@@ -78,7 +78,7 @@ export default function Form({
       <div
         className={`${
           formName === "Register"
-            ? "grid grid-cols-2 gap-x-10 gap-y-2 w-[45vw]"
+            ? "grid grid-cols-2 gap-x-10 gap-y-2 md:w-[45vw] w-70"
             : ""
         }`}
       >
