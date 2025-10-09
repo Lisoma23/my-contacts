@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import "./form.scss";
 
 export default function Form({
   fields = [],

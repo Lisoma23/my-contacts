@@ -222,7 +222,7 @@ router.post("/add", requireAuth, addContacts);
 
 /**
  * @swagger
- * /contact/{id}:
+ * /contact/patch/{id}:
  *   patch:
  *     tags:
  *       - Contacts
@@ -346,11 +346,11 @@ router.post("/add", requireAuth, addContacts);
  *                   type: string
  *                   example: "Server error"
  */
-router.patch("/:id", requireAuth, patchContact);
+router.patch("/patch/:id", requireAuth, patchContact);
 
 /**
  * @swagger
- * /contact/{id}:
+ * /contact/delete/{id}:
  *   delete:
  *     tags:
  *       - Contacts
@@ -434,6 +434,6 @@ router.patch("/:id", requireAuth, patchContact);
  *                   example: "Server error"
  */
 
-router.delete("/:id", requireAuth, deleteContact);
+router.delete("/delete/:id", requireAuth, deleteContact);
 
 export default router;
