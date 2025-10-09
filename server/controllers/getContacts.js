@@ -5,9 +5,8 @@ export async function getContacts(req, res) {
   try {
     const idUser = req.auth.userId;
 
-    try {
-      await User.findById(idUser);
-    } catch {
+    const user = await User.findById(idUser);
+    if (!user) {
       return res.status(404).json({ error: "idUser invalid" });
     }
 
