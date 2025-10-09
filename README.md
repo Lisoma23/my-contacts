@@ -58,7 +58,6 @@ npm start
 
 Le serveur sera disponible sur `http://localhost:3000`.
 
----
 
 5. Créer un fichier `.env` à la racine du dossier client avec les variables suivantes :
 
@@ -66,17 +65,23 @@ Le serveur sera disponible sur `http://localhost:3000`.
 VITE_SERVER_URL=<url_du_server>
 ```
 
-4. Lancer le front en mode développement :
+6. Lancer le front en mode développement :
 
 ```bash
 npm run dev
 ```
 
-Le serveur sera disponible sur `http://localhost:3000`.
+Le front sera disponible sur `http://localhost:5173`.
 
 ---
 
 ## 🛣 Routes API
+
+### Users
+
+| Méthode | Endpoint          | Description                                 | Codes / Erreurs possibles |
+|---------|-----------------|---------------------------------------------|---------------------------|
+| GET    | `/api/users` | Récupère la liste des utilisateurs                 | 200 → Liste retorunée, 500 → ServerError                                                 |
 
 ### Authentification
 
