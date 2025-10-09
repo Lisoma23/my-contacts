@@ -9,7 +9,7 @@ import "react-phone-input-2/lib/style.css";
 
 export default function Home() {
   const firstname = localStorage.getItem("userFirstname");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("userToken");
   const [contacts, setContacts] = useState([]);
@@ -164,6 +164,15 @@ export default function Home() {
   };
 
   const handleSaveNewContact = () => {
+    //vérifie toutes les 500ms si l'utilisateur perd sa co
+    const checkConnectionInterval = setInterval(() => {
+      if (!isOnline) {
+        controller.abort();
+        clearInterval(checkConnectionInterval);
+        setErrorMessage("Connection lost during login. Please try again.");
+      }
+    }, 500);
+
     const errors = {};
 
     if (!newContact.firstname.trim()) errors.firstname = "Firstname required";
@@ -236,10 +245,13 @@ export default function Home() {
 
             <button
               className="btn btn-error"
-              onClick={() => { localStorage.clear(); navigate("/"); }}
+              onClick={() => {
+                localStorage.clear();
+                navigate("/");
+              }}
             >
               Logout
-            </button> 
+            </button>
           </div>
 
           {addingContact && (

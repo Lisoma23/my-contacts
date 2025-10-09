@@ -25,6 +25,12 @@ export default function Form({
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
   };
 
+  const validateMDP = (password) => {
+    return /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(
+      password
+    );
+  };
+
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -47,6 +53,14 @@ export default function Form({
 
       if (field.type === "phone" && !isValidPhoneNumber(value))
         newErrors[field.name] = "Please enter a valid phone number";
+
+      if (
+        field.name === "password" &&
+        formName === "Register" &&
+        !validateMDP(value)
+      )
+        newErrors[field.name] =
+          "Password must contain at least 8 characters, including 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character (#?!@$%^&*-).";
 
       if (field.name === "passwordConfirm" && value !== values["password"])
         newErrors[field.name] = "The confirmation must match the password";
