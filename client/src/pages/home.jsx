@@ -202,12 +202,14 @@ export default function Home() {
         else if (res.status == 500) throw new Error();
         else if (res.status === 201) return res.json();
       })
-      .then(() => {
+      .then((data) => {
+        if (data) {
+          setErrorMessage("");
+        }
         setNewContact({ firstname: "", lastname: "", phone: "" });
         setNewErrors({});
         setAddingContact(false);
         getContactList();
-        setErrorMessage("");
       })
       .catch(() => {
         setErrorMessage("Error while connecting. Please try later");
